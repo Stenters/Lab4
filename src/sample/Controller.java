@@ -17,16 +17,23 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * The controller for the autocomplete application
  */
 public class Controller {
     private File file = new File(
-            "file:///C:/Users/enterss/Documents/GitHub/CS2852/Labs/Lab4/2000words.txt");
-    private AutoCompleter strategy;
+            "file:\\C:\\Users\\enterss\\Documents\\GitHub\\CS2852\\Labs\\Lab4\\2000words.txt");
+    private AutoCompleter strategy = ArrayForEach.initialize(file.getName());
+
+    //DEBUG
+    private long maxTimer = 0;
+    private long minTimer = Long.MAX_VALUE;
+
+    //TODO: Exception Handling, disabling = true?, benchmarking,
+
 
     /**
      * Menu for selecting stratgey
@@ -68,6 +75,7 @@ public class Controller {
         file = chooser.showOpenDialog(new Stage());
 
         strategyMenu.setDisable(false);
+        searchTextField.setDisable(true);
     }
 
     /**
@@ -78,12 +86,40 @@ public class Controller {
         List<String> list;
 
         matchTextArea.setText("");
-        matchTextArea.setDisable(false);
 
         list = strategy.allThatBeginsWith(searchTextField.getText());
         for (String s : list) {
             matchTextArea.setText(matchTextArea.getText() + "\n" + s);
         }
+        long time = strategy.getLastOperationTime();
+
+        if (TimeUnit.NANOSECONDS.toMicros(time) < 1){
+            timeLabel.setText(getNanoTime(time));
+        } else if(TimeUnit.NANOSECONDS.toMillis(time) < 1){
+            timeLabel.setText(getMicroTime(time));
+        } else if(TimeUnit.NANOSECONDS.toSeconds(time) < 1){
+            timeLabel.setText(getMilliTime(time));
+        } else {
+            timeLabel.setText(getTime(strategy.getLastOperationTime()));
+        }
+
+        //DEBUG:
+
+        System.out.println("Using: " + strategy.getClass() +
+                " With prefix: " + searchTextField.getText());
+        System.out.println("Time: " + getSecondTime(time));
+
+        if (time > maxTimer){
+            System.err.println("Max time: " + getSecondTime(time));
+            maxTimer = time;
+        } else if (time < minTimer){
+            System.err.println("Min time: " + getSecondTime(time));
+            minTimer = time;
+        }
+
+
+        matchCounterLabel.setText("Matches: " + list.size());
+
     }
 
     /**
@@ -91,12 +127,9 @@ public class Controller {
      */
     @FXML
     public void setArrayIndex() {
-        try {
-            strategy = ArrayIndex.initialize(file.getName());
-            searchTextField.setDisable(false);
-        } catch (FileNotFoundException e){
-            System.out.println("Err");
-        }
+        strategy = ArrayIndex.initialize(file.getName());
+        searchTextField.setDisable(false);
+
     }
 
     /**
@@ -104,12 +137,8 @@ public class Controller {
      */
     @FXML
     public void setArrayForEach() {
-        try {
-            strategy = ArrayForEach.initialize(file.getName());
-            searchTextField.setDisable(false);
-        } catch (FileNotFoundException e){
-            System.out.println("Err");
-        }
+        strategy = ArrayForEach.initialize(file.getName());
+        searchTextField.setDisable(false);
     }
 
     /**
@@ -117,12 +146,8 @@ public class Controller {
      */
     @FXML
     public void setLinkedIndex() {
-        try {
-            strategy = LinkedIndex.initialize(file.getName());
-            searchTextField.setDisable(false);
-        } catch (FileNotFoundException e){
-            System.out.println("Err");
-        }
+        strategy = LinkedIndex.initialize(file.getName());
+        searchTextField.setDisable(false);
     }
 
     /**
@@ -130,11 +155,34 @@ public class Controller {
      */
     @FXML
     public void setLinkedForEach() {
-        try {
-            strategy = LinkedForEach.initialize(file.getName());
-            searchTextField.setDisable(false);
-        } catch (FileNotFoundException e){
-            System.out.println("Err");
-        }
+        strategy = LinkedForEach.initialize(file.getName());
+        searchTextField.setDisable(false);
+    }
+
+    private String getNanoTime(long nanos){
+        return TimeUnit.NANOSECONDS.toNanos(nanos) + " (ns)";
+    }
+
+    private String getMicroTime(long nanos){
+        return TimeUnit.NANOSECONDS.toMicros(nanos) + " (μs)";
+    }
+
+    private String getMilliTime(long nanos){
+        return TimeUnit.NANOSECONDS.toMillis(nanos) + " (ms)";
+    }
+
+    private String getTime(long nanos) {
+        return String.format("%02d:%02d.%03d", TimeUnit.NANOSECONDS.toMinutes(nanos),
+                TimeUnit.NANOSECONDS.toSeconds(nanos) % TimeUnit.MINUTES.toSeconds(1),
+                TimeUnit.NANOSECONDS.toMillis(nanos) % TimeUnit.SECONDS.toMillis(1));
+
+    }
+
+    //DEBUG
+    private String getSecondTime(long nanos) {
+        return String.format("%d.%03d,%03d,%03d\n", TimeUnit.NANOSECONDS.toSeconds(nanos),
+                TimeUnit.NANOSECONDS.toMillis(nanos) % TimeUnit.SECONDS.toMillis(1),
+                TimeUnit.NANOSECONDS.toMicros(nanos) % TimeUnit.MILLISECONDS.toMicros(1),
+                TimeUnit.NANOSECONDS.toNanos(nanos) % TimeUnit.MICROSECONDS.toNanos(1));
     }
 }

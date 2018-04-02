@@ -8,16 +8,14 @@
 
 package sample;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 /**
  * Logic for auto completing using a Array List and a for each loop
  */
 public class ArrayForEach implements AutoCompleter {
     private ArrayList<String> list;
+    private long time;
 
     private ArrayForEach(ArrayList<String> list){
         this.list = list;
@@ -27,15 +25,10 @@ public class ArrayForEach implements AutoCompleter {
      * Method for initializing AutoCompleter with a Array List
      * @param filename the name of the dictionary to initialize
      * @return a new instance of AutoCompleter
-     * @throws FileNotFoundException if file not found
      */
-    public static AutoCompleter initialize(String filename) throws FileNotFoundException {
+    public static AutoCompleter initialize(String filename) {
         ArrayList<String> list = new ArrayList<>();
-        Scanner scanner = new Scanner(new File(filename));
-        while (scanner.hasNext()){
-            String buffer = scanner.nextLine();
-            list.add(buffer);
-        }
+        AutoCompleter.readFile(filename, list);
         return new ArrayForEach(list);
     }
 
@@ -45,6 +38,7 @@ public class ArrayForEach implements AutoCompleter {
      * @return a list of matching words
      */
     public ArrayList<String> allThatBeginsWith(String prefix) {
+        time = System.nanoTime();
         ArrayList<String> buffer = new ArrayList<>();
         for (String string : list) {
             if (string.length() >= (prefix.length())){
@@ -53,11 +47,15 @@ public class ArrayForEach implements AutoCompleter {
                 }
             }
         }
+        time = System.nanoTime() - time;
         return buffer;
     }
 
-    @Override
+    /**
+     * Getter for the time allThatBeginsWith took
+     * @return the time
+     */
     public long getLastOperationTime() {
-        return 0;
+        return time;
     }
 }
