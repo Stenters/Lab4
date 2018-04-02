@@ -8,18 +8,32 @@
 
 package sample;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.List;
 
 /**
  * The controller for the autocomplete application
  */
 public class Controller {
+    private File file = new File(
+            "file:///C:/Users/enterss/Documents/GitHub/CS2852/Labs/Lab4/2000words.txt");
+    private AutoCompleter strategy;
+
+    /**
+     * Menu for selecting stratgey
+     */
+    @FXML
+    public Menu strategyMenu;
+
     /**
      * Text Field for user input
      */
@@ -44,38 +58,83 @@ public class Controller {
     public Label matchCounterLabel;
 
     /**
-     * Method for checking if the enter key was pressed
-     * @param keyEvent the keyEvent to check
+     * Method for loading a new dictionary file
      */
-    @FXML public void checkEnter(KeyEvent keyEvent) {
-        if(keyEvent.getCode().equals(KeyCode.ENTER)){
-            //TODO
-            System.out.println("Enter Pressed");
+    @FXML
+    public void handleOpen() {
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Select a dictionary to load");
+        chooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+        file = chooser.showOpenDialog(new Stage());
+
+        strategyMenu.setDisable(false);
+    }
+
+    /**
+     * Method for checking if the enter key was pressed
+     */
+    @FXML
+    public void checkKey() {
+        List<String> list;
+
+        matchTextArea.setText("");
+        matchTextArea.setDisable(false);
+
+        list = strategy.allThatBeginsWith(searchTextField.getText());
+        for (String s : list) {
+            matchTextArea.setText(matchTextArea.getText() + "\n" + s);
         }
     }
 
     /**
      * Set the Strategy for the autocomplete
      */
-    @FXML public void setArrayIndex() {
-
+    @FXML
+    public void setArrayIndex() {
+        try {
+            strategy = ArrayIndex.initialize(file.getName());
+            searchTextField.setDisable(false);
+        } catch (FileNotFoundException e){
+            System.out.println("Err");
+        }
     }
+
     /**
      * Set the Strategy for the autocomplete
      */
-    @FXML public void setArrayForEach() {
-
+    @FXML
+    public void setArrayForEach() {
+        try {
+            strategy = ArrayForEach.initialize(file.getName());
+            searchTextField.setDisable(false);
+        } catch (FileNotFoundException e){
+            System.out.println("Err");
+        }
     }
+
     /**
      * Set the Strategy for the autocomplete
      */
-    @FXML public void setLinkedIndex() {
-
+    @FXML
+    public void setLinkedIndex() {
+        try {
+            strategy = LinkedIndex.initialize(file.getName());
+            searchTextField.setDisable(false);
+        } catch (FileNotFoundException e){
+            System.out.println("Err");
+        }
     }
+
     /**
      * Set the Strategy for the autocomplete
      */
-    @FXML public void setLinkedForEach() {
-
+    @FXML
+    public void setLinkedForEach() {
+        try {
+            strategy = LinkedForEach.initialize(file.getName());
+            searchTextField.setDisable(false);
+        } catch (FileNotFoundException e){
+            System.out.println("Err");
+        }
     }
 }
