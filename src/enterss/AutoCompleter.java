@@ -50,7 +50,7 @@ public interface AutoCompleter {
                     list.add(buffer);
                 }
             }
-        }catch (FileNotFoundException e){
+        } catch (FileNotFoundException e){
             System.out.println("Err");
         }
     }

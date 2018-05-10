@@ -8,7 +8,6 @@
 
 package enterss;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
@@ -138,13 +137,19 @@ public class Lab4Controller {
         searchTextField.setDisable(false);
     }
 
-    public void setTree(){
-        strategy = TreeStrategy.initialize(file.getName());
+    /**
+     * Set the Strategy for the autocomplete
+     */
+    public void setNewStrategyTwo(){
+        strategy = NewStrategyTwo.initialize(file.getName());
         searchTextField.setDisable(false);
     }
 
-    public void setMap() {
-        strategy = MapStrategy.initialize(file.getName());
+    /**
+     * Set the Strategy for the autocomplete
+     */
+    public void setNewStrategyOne() {
+        strategy = NewStrategyOne.initialize(file.getName());
         searchTextField.setDisable(false);
 
     }
