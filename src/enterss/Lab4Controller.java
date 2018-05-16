@@ -9,10 +9,11 @@
 package enterss;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Menu;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.Label;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -28,9 +29,13 @@ public class Lab4Controller {
     private AutoCompleter strategy;
 
 
+    /**
+     * Toggle Group for strategy buttons
+     */
+    public ToggleGroup strat;
 
     /**
-     * Menu for selecting stratgey
+     * Menu for selecting strategy
      */
     @FXML
     public Menu strategyMenu;
@@ -67,9 +72,9 @@ public class Lab4Controller {
         chooser.setTitle("Select a dictionary to load");
         chooser.setInitialDirectory(new File(System.getProperty("user.dir")));
         file = chooser.showOpenDialog(new Stage());
-
         strategyMenu.setDisable(false);
     }
+
 
     /**
      * Method for checking if the enter key was pressed

@@ -8,18 +8,20 @@
 
 package enterss;
 
-import java.util.ArrayList;
-import java.util.Collections;
+
+
+import java.util.*;
 
 /**
  * Logic for auto completing using a Array List and a for each loop
  */
+@SuppressWarnings("unchecked")
 public class NewStrategyTwo implements AutoCompleter {
-    private ArrayList<String> list;
+    private Trie trie;
     private long time;
 
-    private NewStrategyTwo(ArrayList<String> list){
-        this.list = list;
+    private NewStrategyTwo(Trie trie){
+        this.trie = trie;
     }
 
     /**
@@ -29,8 +31,7 @@ public class NewStrategyTwo implements AutoCompleter {
      */
     public static AutoCompleter initialize(String filename) {
         ArrayList<String> list = new ArrayList<>();
-        AutoCompleter.readFile(filename, list);
-        return new NewStrategyTwo(list);
+        return null;
     }
 
     /**
@@ -38,12 +39,13 @@ public class NewStrategyTwo implements AutoCompleter {
      * @param prefix the prefix to match against
      * @return a list of matching words
      */
-    public ArrayList<String> allThatBeginsWith(String prefix) {
+    public List<String> allThatBeginsWith(String prefix) {
+        if (prefix.equals("")){
+            return new LinkedList<>();
+        }
         time = System.nanoTime();
-        ArrayList<String> buffer = new ArrayList<>();
-        Collections.sort(list);
         time = System.nanoTime() - time;
-        return buffer;
+        return new LinkedList<>();
     }
 
     /**
@@ -52,5 +54,44 @@ public class NewStrategyTwo implements AutoCompleter {
      */
     public long getLastOperationTime() {
         return time;
+    }
+
+    private class Trie {
+        TrieNode root;
+
+        private class TrieNode {
+            char value;
+            ArrayList<TrieNode> children;
+
+            TrieNode(){
+                children = new ArrayList();
+            }
+
+            TrieNode(char c){
+                value = c;
+                children = new ArrayList();
+            }
+
+            TrieNode get(char c){
+                for (TrieNode node :children) {
+                    if (node.value == c){
+                        return node;
+                    }
+                }
+                return null;
+            }
+
+        }
+
+        public void add(char c){
+            root.children.add(new TrieNode(c));
+        }
+
+        public void add(String key, char c){
+            char[] chars = key.toCharArray();
+            for (char ch : chars) {
+                root.
+            }
+        }
     }
 }

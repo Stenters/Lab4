@@ -45,7 +45,7 @@ public class ForEachArrayStrategy implements AutoCompleter {
         }
         for (String string : list) {
             if (string.length() >= (prefix.length())){
-                if (string.substring(0, (prefix.length())).equals(prefix)){
+                if (string.startsWith(prefix)){
                     buffer.add(string);
                 }
             }

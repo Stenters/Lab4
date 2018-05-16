@@ -11,25 +11,20 @@ package enterss;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Strategy for autocompleter using a Map
  */
 @SuppressWarnings("unchecked")
 public class NewStrategyOne implements AutoCompleter {
-    private static final int ASCII_CHAR_START_VAL = 65;
-    private static final int ASCII_CHAR_END_VAL = 91;
     private long time;
-    private Map map;
+    private HashMap<Integer, ArrayList> map;
 
     private NewStrategyOne(ArrayList<String> list) {
-        Map<Character, ArrayList> map = new HashMap<>();
-        for (int i = ASCII_CHAR_START_VAL; i < ASCII_CHAR_END_VAL; i++) {
-            map.put((char) i, new ArrayList<String>());
-        }
+        HashMap<Integer, ArrayList> map = new HashMap<>();
         for (String s: list) {
-            map.get(Character.toUpperCase(s.charAt(0))).add(s);
+            map.computeIfAbsent((int) s.charAt(0), k -> new ArrayList());
+            map.get((int) s.charAt(0)).add(s);
         }
         this.map = map;
     }
@@ -52,14 +47,12 @@ public class NewStrategyOne implements AutoCompleter {
      */
     @Override
     public List<String> allThatBeginsWith(String prefix) {
-        time = System.nanoTime();
-        ArrayList<String> list = new ArrayList();
-        ArrayList<String> tempList = (ArrayList) map.get(prefix.charAt(0));
-        for (String s: tempList) {
-            if (s.startsWith(prefix)){
-                list.add(s);
-            }
+        if (prefix.equals("")){
+            return new ArrayList<>();
         }
+        time = System.nanoTime();
+        ArrayList<String> list= map.get((int) prefix.charAt(0));
+        list.removeIf(s -> !s.startsWith(prefix));
         time = System.nanoTime() - time;
         return list;
     }
