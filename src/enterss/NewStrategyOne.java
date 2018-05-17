@@ -47,12 +47,14 @@ public class NewStrategyOne implements AutoCompleter {
      */
     @Override
     public List<String> allThatBeginsWith(String prefix) {
+
         if (prefix.equals("")){
             return new ArrayList<>();
         }
+
         time = System.nanoTime();
-        ArrayList<String> list= map.get((int) prefix.charAt(0));
-        list.removeIf(s -> !s.startsWith(prefix));
+        ArrayList<String> list = (ArrayList)map.get((int) prefix.charAt(0)).clone();
+        list.removeIf(s -> !s.startsWith(prefix.toLowerCase()));
         time = System.nanoTime() - time;
         return list;
     }

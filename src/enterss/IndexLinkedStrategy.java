@@ -43,11 +43,11 @@ public class IndexLinkedStrategy implements AutoCompleter {
         if (prefix.equals("")){
             return buffer;
         }
+        String temp;
         for (int i = 0; i < list.size(); i++){
-            if (list.get(i).length() >= (prefix.length())){
-                if (list.get(i).substring(0, (prefix.length())).equals(prefix)){
-                    buffer.add(list.get(i));
-                }
+            temp = list.get(i);
+            if (temp.startsWith(prefix)){
+                buffer.add(temp);
             }
         }
         time = System.nanoTime() - time;

@@ -10,7 +10,8 @@ package enterss;
 
 
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Logic for auto completing using a Array List and a for each loop
@@ -31,7 +32,12 @@ public class NewStrategyTwo implements AutoCompleter {
      */
     public static AutoCompleter initialize(String filename) {
         ArrayList<String> list = new ArrayList<>();
-        return null;
+        AutoCompleter.readFile(filename, list);
+        Trie trie = new Trie();
+        for (String s: list) {
+            trie.add(s);
+        }
+        return new NewStrategyTwo(trie);
     }
 
     /**
@@ -40,12 +46,15 @@ public class NewStrategyTwo implements AutoCompleter {
      * @return a list of matching words
      */
     public List<String> allThatBeginsWith(String prefix) {
+        prefix = prefix.toLowerCase();
+        ArrayList<String> list = new ArrayList();
         if (prefix.equals("")){
-            return new LinkedList<>();
+            return list;
         }
         time = System.nanoTime();
+        list.addAll(trie.getWords(prefix));
         time = System.nanoTime() - time;
-        return new LinkedList<>();
+        return list;
     }
 
     /**
@@ -56,42 +65,4 @@ public class NewStrategyTwo implements AutoCompleter {
         return time;
     }
 
-    private class Trie {
-        TrieNode root;
-
-        private class TrieNode {
-            char value;
-            ArrayList<TrieNode> children;
-
-            TrieNode(){
-                children = new ArrayList();
-            }
-
-            TrieNode(char c){
-                value = c;
-                children = new ArrayList();
-            }
-
-            TrieNode get(char c){
-                for (TrieNode node :children) {
-                    if (node.value == c){
-                        return node;
-                    }
-                }
-                return null;
-            }
-
-        }
-
-        public void add(char c){
-            root.children.add(new TrieNode(c));
-        }
-
-        public void add(String key, char c){
-            char[] chars = key.toCharArray();
-            for (char ch : chars) {
-                root.
-            }
-        }
-    }
 }
